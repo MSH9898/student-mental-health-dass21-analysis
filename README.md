@@ -34,7 +34,7 @@ DOI: 10.5255/UKDA-SN-854720
 
 The dataset belongs to the original data creators and is not claimed as the property of the author of this repository.
 
-Users who reuse the dataset should follow the original source's access, licensing, and citation requirements.
+Users who reuse the dataset should follow the original data source's access, licensing, and citation requirements.
 
 ## Analysis
 
@@ -60,37 +60,23 @@ dass21-student-mental-health-analysis/
 │
 ├── README.md
 ├── LICENSE
-├── data/
+│
 ├── R/
 │   ├── 00_main.R
 │   ├── 02_analysis.R
 │   └── 03_visualization.R
 │
-└── results/
-    ├── figures/
-    └── tables/
-└── tables/
-    └── tables/
-
-## Results
-
-The analysis found:
-
-- No significant association between age and depression.
-- No significant association between age and anxiety.
-- No significant association between age and stress.
-- No significant gender differences in depression, anxiety, or stress scores.
-- Significant differences in depression scores across academic years.
-- Significant differences in anxiety scores across academic years.
-- No significant differences in stress scores across academic years.
-
-Detailed statistical results and visualizations are provided in the `results/` directory.
-
-## Reproducibility
-
-The analysis can be reproduced using the R scripts provided in the `R/` directory.
-
-The main script is:
-
-```r
-source("R/00_main.R")
+├── results/
+│   ├── figures/
+│   │   ├── age_depression.png
+│   │   ├── dass_by_year.png
+│   │   ├── dass_correlation.png
+│   │   ├── depression_by_age.png
+│   │   ├── gender_boxplots.png
+│   │   └── mean_dass_scores.png
+│   │
+│   └── tables/
+│       └── results_summary.csv
+│
+└── report/
+    └── Student_Mental_Health_DASS21_Analysis_Report.docx
