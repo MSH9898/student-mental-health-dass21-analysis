@@ -380,6 +380,8 @@ boxplot(
   ylab = "Stress Score",
   main = "Stress Score by Gender"
 )
+
+
 # =========================================================
 # 15. Correlation between age and anxiety
 # =========================================================
@@ -400,6 +402,8 @@ cor.test(
   student_data$stress_score,
   use = "complete.obs"
 )
+
+
 # =========================================================
 # 17. Mean DASS-21 scores by gender
 # =========================================================
@@ -416,14 +420,11 @@ gender_dass_means <- aggregate(
 )
 
 gender_dass_means
-# Save results summary table
 
-write.csv(
-  results_summary,
-  "results/tables/results_summary.csv",
-  row.names = FALSE
-)
-# Summary table of statistical tests
+
+# =========================================================
+# 18. Summary table of statistical tests
+# =========================================================
 
 results_summary <- data.frame(
   Analysis = c(
@@ -437,7 +438,7 @@ results_summary <- data.frame(
     "Year - Anxiety",
     "Year - Stress"
   ),
-  
+
   P_value = c(
     0.622,
     0.6498,
@@ -451,6 +452,8 @@ results_summary <- data.frame(
   )
 )
 
+
+# Save results summary table
 
 write.csv(
   results_summary,
