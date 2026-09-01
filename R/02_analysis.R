@@ -9,7 +9,7 @@
 library(readr)
 
 student_data <- read_csv(
-  "data/student_mental_health.csv",
+  "Data/student_mental_health.csv",
   show_col_types = FALSE
 )
 
