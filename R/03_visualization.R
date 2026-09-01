@@ -6,7 +6,8 @@
 
 dir.create(
   "results/figures",
-  showWarnings = FALSE
+  showWarnings = FALSE,
+  recursive = TRUE
 )
 
 
@@ -177,7 +178,6 @@ par(
 boxplot(
   depression_score ~ gender,
   data = gender_data,
-  subset = gender %in% c("female", "male"),
   xlab = "Gender",
   ylab = "Depression Score",
   main = "Depression Score by Gender"
@@ -186,7 +186,6 @@ boxplot(
 boxplot(
   anxiety_score ~ gender,
   data = gender_data,
-  subset = gender %in% c("female", "male"),
   xlab = "Gender",
   ylab = "Anxiety Score",
   main = "Anxiety Score by Gender"
@@ -195,10 +194,15 @@ boxplot(
 boxplot(
   stress_score ~ gender,
   data = gender_data,
-  subset = gender %in% c("female", "male"),
   xlab = "Gender",
   ylab = "Stress Score",
   main = "Stress Score by Gender"
 )
 
 dev.off()
+
+# Reset plotting layout
+
+par(
+  mfrow = c(1, 1)
+)
