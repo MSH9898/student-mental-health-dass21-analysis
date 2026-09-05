@@ -18,10 +18,17 @@ student_data <- read_csv(
 # 2. Data cleaning
 # =========================================================
 
-# Remove invalid values from Question 19
-student_data$`Question 19`[
-  student_data$`Question 19` > 3
-] <- NA
+# Check and remove invalid values from all DASS-21 questions
+
+dass_items <- paste0("Question ", 1:21)
+
+student_data[dass_items] <- lapply(
+  student_data[dass_items],
+  function(x) {
+    x[x < 0 | x > 3] <- NA
+    x
+  }
+)
 
 # Remove invalid ages below 15
 student_data$age[
