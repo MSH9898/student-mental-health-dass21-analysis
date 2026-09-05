@@ -49,7 +49,8 @@ student_data$depression_score <- rowSums(
     "Question 16",
     "Question 17",
     "Question 21"
-  )]
+  )],
+  na.rm = TRUE
 )
 
 student_data$anxiety_score <- rowSums(
@@ -61,7 +62,8 @@ student_data$anxiety_score <- rowSums(
     "Question 15",
     "Question 19",
     "Question 20"
-  )]
+  )],
+  na.rm = TRUE
 )
 
 student_data$stress_score <- rowSums(
@@ -73,7 +75,8 @@ student_data$stress_score <- rowSums(
     "Question 12",
     "Question 14",
     "Question 18"
-  )]
+  )],
+  na.rm = TRUE
 )
 
 
@@ -116,9 +119,10 @@ anova_model <- aov(
 
 summary(anova_model)
 
+# Check ANOVA assumptions
+plot(anova_model)
 
 # Post-hoc Tukey test
-
 TukeyHSD(anova_model)
 
 
@@ -264,11 +268,11 @@ anova_anxiety <- aov(
 
 summary(anova_anxiety)
 
+# Check ANOVA assumptions
+plot(anova_anxiety)
 
 # Post-hoc Tukey test
-
 TukeyHSD(anova_anxiety)
-
 
 # =========================================================
 # 11. ANOVA: Stress by year
@@ -280,6 +284,9 @@ anova_stress <- aov(
 )
 
 summary(anova_stress)
+
+# Check ANOVA assumptions
+plot(anova_stress)
 
 
 # =========================================================
