@@ -31,6 +31,7 @@ student_data[dass_items] <- lapply(
 )
 
 # Remove invalid ages below 15
+
 student_data$age[
   student_data$age < 15
 ] <- NA
@@ -40,44 +41,78 @@ student_data$age[
 # 3. Calculate DASS-21 subscale scores
 # =========================================================
 
+depression_items <- c(
+  "Question 3",
+  "Question 5",
+  "Question 10",
+  "Question 13",
+  "Question 16",
+  "Question 17",
+  "Question 21"
+)
+
+anxiety_items <- c(
+  "Question 2",
+  "Question 4",
+  "Question 7",
+  "Question 9",
+  "Question 15",
+  "Question 19",
+  "Question 20"
+)
+
+stress_items <- c(
+  "Question 1",
+  "Question 6",
+  "Question 8",
+  "Question 11",
+  "Question 12",
+  "Question 14",
+  "Question 18"
+)
+
+# Calculate scores only when at least one item is available
+
+depression_n <- rowSums(
+  !is.na(student_data[depression_items])
+)
+
 student_data$depression_score <- rowSums(
-  student_data[, c(
-    "Question 3",
-    "Question 5",
-    "Question 10",
-    "Question 13",
-    "Question 16",
-    "Question 17",
-    "Question 21"
-  )],
+  student_data[depression_items],
   na.rm = TRUE
+)
+
+student_data$depression_score[
+  depression_n == 0
+] <- NA
+
+
+anxiety_n <- rowSums(
+  !is.na(student_data[anxiety_items])
 )
 
 student_data$anxiety_score <- rowSums(
-  student_data[, c(
-    "Question 2",
-    "Question 4",
-    "Question 7",
-    "Question 9",
-    "Question 15",
-    "Question 19",
-    "Question 20"
-  )],
+  student_data[anxiety_items],
   na.rm = TRUE
 )
 
+student_data$anxiety_score[
+  anxiety_n == 0
+] <- NA
+
+
+stress_n <- rowSums(
+  !is.na(student_data[stress_items])
+)
+
 student_data$stress_score <- rowSums(
-  student_data[, c(
-    "Question 1",
-    "Question 6",
-    "Question 8",
-    "Question 11",
-    "Question 12",
-    "Question 14",
-    "Question 18"
-  )],
+  student_data[stress_items],
   na.rm = TRUE
 )
+
+student_data$stress_score[
+  stress_n == 0
+] <- NA
 
 
 # =========================================================
@@ -103,7 +138,10 @@ plot(
 )
 
 abline(
-  lm(depression_score ~ age, data = student_data),
+  lm(
+    depression_score ~ age,
+    data = student_data
+  ),
   lwd = 2
 )
 
@@ -120,9 +158,11 @@ anova_model <- aov(
 summary(anova_model)
 
 # Check ANOVA assumptions
+
 plot(anova_model)
 
 # Post-hoc Tukey test
+
 TukeyHSD(anova_model)
 
 
@@ -269,10 +309,13 @@ anova_anxiety <- aov(
 summary(anova_anxiety)
 
 # Check ANOVA assumptions
+
 plot(anova_anxiety)
 
 # Post-hoc Tukey test
+
 TukeyHSD(anova_anxiety)
+
 
 # =========================================================
 # 11. ANOVA: Stress by year
@@ -286,7 +329,12 @@ anova_stress <- aov(
 summary(anova_stress)
 
 # Check ANOVA assumptions
+
 plot(anova_stress)
+
+# Post-hoc Tukey test
+
+TukeyHSD(anova_stress)
 
 
 # =========================================================
