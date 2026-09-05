@@ -71,11 +71,9 @@ stress_items <- c(
   "Question 18"
 )
 
-# Calculate scores only when at least one item is available
+# Calculate scores while preserving NA when all items are missing
 
-depression_n <- rowSums(
-  !is.na(student_data[depression_items])
-)
+depression_n <- rowSums(!is.na(student_data[depression_items]))
 
 student_data$depression_score <- rowSums(
   student_data[depression_items],
@@ -87,9 +85,7 @@ student_data$depression_score[
 ] <- NA
 
 
-anxiety_n <- rowSums(
-  !is.na(student_data[anxiety_items])
-)
+anxiety_n <- rowSums(!is.na(student_data[anxiety_items]))
 
 student_data$anxiety_score <- rowSums(
   student_data[anxiety_items],
@@ -101,9 +97,7 @@ student_data$anxiety_score[
 ] <- NA
 
 
-stress_n <- rowSums(
-  !is.na(student_data[stress_items])
-)
+stress_n <- rowSums(!is.na(student_data[stress_items]))
 
 student_data$stress_score <- rowSums(
   student_data[stress_items],
@@ -124,9 +118,6 @@ cor.test(
   student_data$depression_score,
   use = "complete.obs"
 )
-
-
-# Scatter plot: Age and Depression
 
 plot(
   jitter(student_data$age),
@@ -158,11 +149,9 @@ anova_model <- aov(
 summary(anova_model)
 
 # Check ANOVA assumptions
-
 plot(anova_model)
 
 # Post-hoc Tukey test
-
 TukeyHSD(anova_model)
 
 
@@ -206,16 +195,12 @@ gender_means <- aggregate(
 
 gender_means
 
-
 t_test_gender <- t.test(
   depression_score ~ gender,
   data = gender_data
 )
 
 t_test_gender
-
-
-# Boxplot: Depression by Gender
 
 boxplot(
   depression_score ~ gender,
@@ -238,9 +223,6 @@ summary(
   )]
 )
 
-
-# Mean scores
-
 mean_scores <- c(
   Depression = mean(
     student_data$depression_score,
@@ -257,9 +239,6 @@ mean_scores <- c(
 )
 
 mean_scores
-
-
-# Barplot: Mean DASS-21 scores
 
 barplot(
   mean_scores,
@@ -282,9 +261,6 @@ cor(
   )],
   use = "complete.obs"
 )
-
-
-# Correlation plot
 
 pairs(
   student_data[, c(
@@ -309,11 +285,9 @@ anova_anxiety <- aov(
 summary(anova_anxiety)
 
 # Check ANOVA assumptions
-
 plot(anova_anxiety)
 
 # Post-hoc Tukey test
-
 TukeyHSD(anova_anxiety)
 
 
@@ -329,11 +303,9 @@ anova_stress <- aov(
 summary(anova_stress)
 
 # Check ANOVA assumptions
-
 plot(anova_stress)
 
 # Post-hoc Tukey test
-
 TukeyHSD(anova_stress)
 
 
@@ -353,9 +325,6 @@ year_means <- aggregate(
 )
 
 year_means
-
-
-# Line plot: Mean DASS-21 scores by year
 
 plot(
   year_means$year,
@@ -398,21 +367,21 @@ legend(
 # 13. Gender analysis: Anxiety
 # =========================================================
 
+anxiety_gender_data <- subset(
+  student_data,
+  gender %in% c("female", "male")
+)
+
 t_test_anxiety_gender <- t.test(
   anxiety_score ~ gender,
-  data = student_data,
-  subset = gender %in% c("female", "male")
+  data = anxiety_gender_data
 )
 
 t_test_anxiety_gender
 
-
-# Boxplot: Anxiety by Gender
-
 boxplot(
   anxiety_score ~ gender,
-  data = student_data,
-  subset = gender %in% c("female", "male"),
+  data = anxiety_gender_data,
   xlab = "Gender",
   ylab = "Anxiety Score",
   main = "Anxiety Score by Gender"
@@ -423,21 +392,21 @@ boxplot(
 # 14. Gender analysis: Stress
 # =========================================================
 
+stress_gender_data <- subset(
+  student_data,
+  gender %in% c("female", "male")
+)
+
 t_test_stress_gender <- t.test(
   stress_score ~ gender,
-  data = student_data,
-  subset = gender %in% c("female", "male")
+  data = stress_gender_data
 )
 
 t_test_stress_gender
 
-
-# Boxplot: Stress by Gender
-
 boxplot(
   stress_score ~ gender,
-  data = student_data,
-  subset = gender %in% c("female", "male"),
+  data = stress_gender_data,
   xlab = "Gender",
   ylab = "Stress Score",
   main = "Stress Score by Gender"
@@ -502,15 +471,41 @@ results_summary <- data.frame(
   ),
 
   P_value = c(
-    0.622,
-    0.6498,
-    0.3939,
-    0.6979,
-    0.4992,
-    0.1233,
-    0.000103,
-    0.00167,
-    0.195
+    cor.test(
+      student_data$age,
+      student_data$depression_score
+    )$p.value,
+
+    cor.test(
+      student_data$age,
+      student_data$anxiety_score
+    )$p.value,
+
+    cor.test(
+      student_data$age,
+      student_data$stress_score
+    )$p.value,
+
+    t.test(
+      depression_score ~ gender,
+      data = gender_data
+    )$p.value,
+
+    t.test(
+      anxiety_score ~ gender,
+      data = anxiety_gender_data
+    )$p.value,
+
+    t.test(
+      stress_score ~ gender,
+      data = stress_gender_data
+    )$p.value,
+
+    summary(anova_model)[[1]][["Pr(>F)"]][1],
+
+    summary(anova_anxiety)[[1]][["Pr(>F)"]][1],
+
+    summary(anova_stress)[[1]][["Pr(>F)"]][1]
   )
 )
 
