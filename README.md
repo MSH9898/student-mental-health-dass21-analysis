@@ -10,7 +10,7 @@ The analysis investigates whether mental health scores are associated with:
 
 - Age
 - Gender
-- Academic year
+- Survey year
 
 The project was developed as an independent statistical analysis using R.
 
@@ -18,7 +18,7 @@ The project was developed as an independent statistical analysis using R.
 
 1. Is age associated with depression, anxiety, or stress scores?
 2. Are depression, anxiety, and stress scores different between female and male students?
-3. Do depression, anxiety, and stress scores differ across academic years?
+3. Do depression, anxiety, and stress scores differ across survey years?
 
 ## Dataset
 
@@ -36,6 +36,18 @@ The dataset belongs to the original data creators and is not claimed as the prop
 
 Users who reuse the dataset should follow the original data source's access, licensing, and citation requirements.
 
+## Data Preparation
+
+The data preparation script:
+
+- Validates all 21 DASS-21 questions to ensure responses are within the expected 0–3 range.
+- Treats invalid DASS-21 responses as missing values.
+- Treats ages below 15 as missing values.
+- Calculates Depression, Anxiety, and Stress subscale scores.
+- Preserves missing scores when all items belonging to a subscale are missing.
+
+The project uses raw DASS-21 subscale scores ranging from 0 to 21. Scores are not multiplied by two to convert them to the DASS-42 equivalent.
+
 ## Analysis
 
 The statistical analysis was conducted in R and includes:
@@ -45,6 +57,7 @@ The statistical analysis was conducted in R and includes:
 - One-way ANOVA
 - Tukey post-hoc tests
 - Descriptive statistics
+- Effect sizes
 - Data visualization
 
 The analysis focuses on three DASS-21 subscales:
@@ -52,6 +65,18 @@ The analysis focuses on three DASS-21 subscales:
 - Depression
 - Anxiety
 - Stress
+
+For gender comparisons, Cohen's d is used as an effect size.
+
+For one-way ANOVA, eta squared is used as an effect size.
+
+## Interpretation
+
+The analyses are observational and should not be interpreted as evidence of causation.
+
+In particular, differences between survey years should not be interpreted as evidence that the COVID-19 pandemic directly caused changes in mental health scores.
+
+A non-significant statistical test is interpreted as insufficient evidence of an association or difference, rather than proof that no relationship exists.
 
 ## Project Structure
 
@@ -61,19 +86,25 @@ dass21-student-mental-health-analysis/
 ├── README.md
 ├── LICENSE
 │
+├── Data/
+│   └── student_mental_health.csv
+│
 ├── R/
 │   ├── 00_main.R
+│   ├── 01_data_preparation.R
 │   ├── 02_analysis.R
 │   └── 03_visualization.R
 │
 ├── results/
 │   ├── figures/
 │   │   ├── age_depression.png
+│   │   ├── anxiety_gender.png
 │   │   ├── dass_by_year.png
 │   │   ├── dass_correlation.png
 │   │   ├── depression_by_age.png
-│   │   ├── gender_boxplots.png
-│   │   └── mean_dass_scores.png
+│   │   ├── depression_gender.png
+│   │   ├── mean_dass_scores.png
+│   │   └── stress_gender.png
 │   │
 │   └── tables/
 │       └── results_summary.csv
