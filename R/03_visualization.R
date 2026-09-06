@@ -1,116 +1,9 @@
 # 03_visualization.R
 # Visualization of student mental health data
 
-
-# =========================================================
-# 0. Load required packages and data
-# =========================================================
-
-library(readr)
 library(ggplot2)
 
-student_data <- read_csv(
-  "Data/student_mental_health.csv",
-  show_col_types = FALSE
-)
-
-
-# =========================================================
-# 1. Data cleaning and DASS-21 scores
-# =========================================================
-
-dass_items <- paste0("Question ", 1:21)
-
-student_data[dass_items] <- lapply(
-  student_data[dass_items],
-  function(x) {
-    x[x < 0 | x > 3] <- NA
-    x
-  }
-)
-
-student_data$age[
-  student_data$age < 15
-] <- NA
-
-
-depression_items <- c(
-  "Question 3",
-  "Question 5",
-  "Question 10",
-  "Question 13",
-  "Question 16",
-  "Question 17",
-  "Question 21"
-)
-
-anxiety_items <- c(
-  "Question 2",
-  "Question 4",
-  "Question 7",
-  "Question 9",
-  "Question 15",
-  "Question 19",
-  "Question 20"
-)
-
-stress_items <- c(
-  "Question 1",
-  "Question 6",
-  "Question 8",
-  "Question 11",
-  "Question 12",
-  "Question 14",
-  "Question 18"
-)
-
-
-depression_n <- rowSums(
-  !is.na(student_data[depression_items])
-)
-
-student_data$depression_score <- rowSums(
-  student_data[depression_items],
-  na.rm = TRUE
-)
-
-student_data$depression_score[
-  depression_n == 0
-] <- NA
-
-
-anxiety_n <- rowSums(
-  !is.na(student_data[anxiety_items])
-)
-
-student_data$anxiety_score <- rowSums(
-  student_data[anxiety_items],
-  na.rm = TRUE
-)
-
-student_data$anxiety_score[
-  anxiety_n == 0
-] <- NA
-
-
-stress_n <- rowSums(
-  !is.na(student_data[stress_items])
-)
-
-student_data$stress_score <- rowSums(
-  student_data[stress_items],
-  na.rm = TRUE
-)
-
-student_data$stress_score[
-  stress_n == 0
-] <- NA
-
-
-# =========================================================
-# 2. Create output folder
-# =========================================================
-
+# Create folder for figures
 dir.create(
   "results/figures",
   showWarnings = FALSE,
@@ -119,7 +12,7 @@ dir.create(
 
 
 # =========================================================
-# 3. Age and Depression scatter plot
+# 1. Age and Depression scatter plot
 # =========================================================
 
 age_depression_data <- subset(
@@ -131,7 +24,11 @@ p1 <- ggplot(
   age_depression_data,
   aes(x = age, y = depression_score)
 ) +
-  geom_jitter(width = 0.2, height = 0.2, alpha = 0.5) +
+  geom_jitter(
+    width = 0.2,
+    height = 0.2,
+    alpha = 0.5
+  ) +
   geom_smooth(
     method = "lm",
     se = TRUE
@@ -152,15 +49,8 @@ ggsave(
 
 
 # =========================================================
-# 4. Mean Depression Score by Age
+# 2. Mean Depression Score by Age
 # =========================================================
-
-age_depression <- aggregate(
-  depression_score ~ age,
-  data = student_data,
-  FUN = mean,
-  na.rm = TRUE
-)
 
 p2 <- ggplot(
   age_depression,
@@ -184,33 +74,16 @@ ggsave(
 
 
 # =========================================================
-# 5. Mean DASS-21 scores
+# 3. Mean DASS-21 scores
 # =========================================================
 
-mean_scores <- data.frame(
-  Subscale = c(
-    "Depression",
-    "Anxiety",
-    "Stress"
-  ),
-  Mean = c(
-    mean(
-      student_data$depression_score,
-      na.rm = TRUE
-    ),
-    mean(
-      student_data$anxiety_score,
-      na.rm = TRUE
-    ),
-    mean(
-      student_data$stress_score,
-      na.rm = TRUE
-    )
-  )
+mean_scores_plot <- data.frame(
+  Subscale = names(mean_scores),
+  Mean = as.numeric(mean_scores)
 )
 
 p3 <- ggplot(
-  mean_scores,
+  mean_scores_plot,
   aes(x = Subscale, y = Mean)
 ) +
   geom_col() +
@@ -230,7 +103,7 @@ ggsave(
 
 
 # =========================================================
-# 6. Correlation plot of DASS-21
+# 4. DASS-21 correlation plot
 # =========================================================
 
 dass_complete <- na.omit(
@@ -257,25 +130,11 @@ dev.off()
 
 
 # =========================================================
-# 7. Mean DASS-21 scores by year
+# 5. Mean DASS-21 scores by survey year
 # =========================================================
 
-year_means <- aggregate(
-  cbind(
-    depression_score,
-    anxiety_score,
-    stress_score
-  ) ~ year,
-  data = student_data,
-  FUN = mean,
-  na.rm = TRUE
-)
-
 year_long <- data.frame(
-  Year = rep(
-    year_means$year,
-    times = 3
-  ),
+  Year = rep(year_means$year, times = 3),
   Subscale = rep(
     c(
       "Depression",
@@ -318,13 +177,8 @@ ggsave(
 
 
 # =========================================================
-# 8. Gender boxplots
+# 6. Depression by gender
 # =========================================================
-
-gender_data <- subset(
-  student_data,
-  gender %in% c("female", "male")
-)
 
 p6 <- ggplot(
   gender_data,
@@ -349,8 +203,12 @@ ggsave(
 )
 
 
+# =========================================================
+# 7. Anxiety by gender
+# =========================================================
+
 p7 <- ggplot(
-  gender_data,
+  anxiety_gender_data,
   aes(
     x = gender,
     y = anxiety_score
@@ -372,8 +230,12 @@ ggsave(
 )
 
 
+# =========================================================
+# 8. Stress by gender
+# =========================================================
+
 p8 <- ggplot(
-  gender_data,
+  stress_gender_data,
   aes(
     x = gender,
     y = stress_score
